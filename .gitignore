@@ -1,0 +1,7 @@
+# Solidity
+.deps
+.build
+
+# NodeJS
+node_modules
+.env
