@@ -3,7 +3,8 @@
   "private": true,
   "dependencies": {
     "dotenv": "^15.0.0",
-    "ethers": "^5.5.4"
+    "ethers": "^5.5.4",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "eslint": "^8.8.0"
