@@ -49,7 +49,7 @@ async function run() {
 			console.log(`Tx Sent [Nonce: ${currentNonce}] hash: ${tx.hash}`);
 			return tx;
 		}));
-		Promise.all(_.map(txs, async (tx, sliceIdx) => {
+		await Promise.all(_.map(txs, async (tx, sliceIdx) => {
 			const currentNonce = nonceStart + i + sliceIdx;
 			const result = await tx.wait();
 			if (result) {
