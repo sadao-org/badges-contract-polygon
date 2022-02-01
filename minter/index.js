@@ -57,7 +57,7 @@ async function run() {
 			}
 			return result;
 		}));
-		console.log(`Progress: ${i + step}/${maxLength} - ${Math.floor((i + step) / maxLength * 10000) / 100}%`);
+		console.log(`Progress: ${step}/${maxLength} - ${Math.floor((step) / maxLength * 10000) / 100}%`);
 	}
 }
 run();
