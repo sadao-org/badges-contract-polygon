@@ -35,7 +35,8 @@ async function run() {
 	const batchAmt = 20;
 	const maxLength = importedArray.length;
 	for (let i = 0; i < maxLength; i += batchAmt) {
-		const sliced = _.slice(importedArray, i, Math.min(maxLength, i + batchAmt));
+		const step = Math.min(maxLength, i + batchAmt);
+		const sliced = _.slice(importedArray, i, step);
 		const txs = await Promise.all(_.map(sliced, async (address, sliceIdx) => {
 			const currentNonce = nonceStart + i + sliceIdx;
 			console.log(`Minting for (${address}) at nonce [${currentNonce}]...`);
@@ -53,6 +54,7 @@ async function run() {
 			}
 			return result;
 		}));
+		console.log(`Progress: ${i + step}/${maxLength} - ${Math.floor((i + step) / maxLength * 10000) / 100}%`);
 	}
 }
 run();
