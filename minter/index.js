@@ -31,6 +31,8 @@ async function run() {
 	const sender = process.env.ADMIN_ADDRESS;
 	const nonceStart = await rpcProvider.getTransactionCount(sender);
 	console.log(`Minter Address(${sender}) Start Nonce: ${nonceStart}`);
+	const estimatedGasPrice = await rpcProvider.getGasPrice();
+	console.log(`GasPrice: ${estimatedGasPrice.toString()}`);
 
 	const batchAmt = 20;
 	const maxLength = importedArray.length;
@@ -41,12 +43,13 @@ async function run() {
 			const currentNonce = nonceStart + i + sliceIdx;
 			console.log(`Minting for (${address}) at nonce [${currentNonce}]...`);
 			const tx = await contractIns.mint(address, ethers.BigNumber.from(1), ethers.BigNumber.from(1), 0x0, {
+				gasPrice: estimatedGasPrice.mul(2),
 				nonce: currentNonce,
 			});
 			console.log(`Tx Sent [Nonce: ${currentNonce}] hash: ${tx.hash}`);
 			return tx;
 		}));
-		await Promise.all(_.map(txs, async (tx, sliceIdx) => {
+		Promise.all(_.map(txs, async (tx, sliceIdx) => {
 			const currentNonce = nonceStart + i + sliceIdx;
 			const result = await tx.wait();
 			if (result) {
