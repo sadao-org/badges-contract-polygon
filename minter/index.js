@@ -1,7 +1,4 @@
 require('dotenv').config();
-const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
 const ethers = require('ethers');
 
 const isTestnet = process.env.NETWORK === 'testnet';
@@ -21,43 +18,8 @@ const CONTRACT_ADDRESS = isTestnet
 const CONTRACT_ABI = require('./json/SaDAOBadge.abi.json');
 const contractIns = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-// load imported json
-const importedFile = fs.readFileSync(path.resolve(__dirname, 'data', process.env.IMPORTED_JSON_FILE));
-/** @type {string[]} */
-const importedArray = JSON.parse(importedFile);
-
 // run
 async function run() {
-	const sender = process.env.ADMIN_ADDRESS;
-	const nonceStart = await rpcProvider.getTransactionCount(sender);
-	console.log(`Minter Address(${sender}) Start Nonce: ${nonceStart}`);
-	const estimatedGasPrice = await rpcProvider.getGasPrice();
-	console.log(`GasPrice: ${estimatedGasPrice.toString()}`);
-
-	const batchAmt = 20;
-	const maxLength = importedArray.length;
-	for (let i = 0; i < maxLength; i += batchAmt) {
-		const step = Math.min(maxLength, i + batchAmt);
-		const sliced = _.slice(importedArray, i, step);
-		const txs = await Promise.all(_.map(sliced, async (address, sliceIdx) => {
-			const currentNonce = nonceStart + i + sliceIdx;
-			console.log(`Minting for (${address}) at nonce [${currentNonce}]...`);
-			const tx = await contractIns.mint(address, ethers.BigNumber.from(1), ethers.BigNumber.from(1), 0x0, {
-				gasPrice: estimatedGasPrice.mul(2),
-				nonce: currentNonce,
-			});
-			console.log(`Tx Sent [Nonce: ${currentNonce}] hash: ${tx.hash}`);
-			return tx;
-		}));
-		await Promise.all(_.map(txs, async (tx, sliceIdx) => {
-			const currentNonce = nonceStart + i + sliceIdx;
-			const result = await tx.wait();
-			if (result) {
-				console.log(`Tx InBlock [Nonce: ${currentNonce}] Block: ${result.blockNumber} status: ${result.status}`);
-			}
-			return result;
-		}));
-		console.log(`Progress: ${step}/${maxLength} - ${Math.floor((step) / maxLength * 10000) / 100}%`);
-	}
+	require('./scripts/batchMint')(contractIns, rpcProvider);
 }
 run();
