@@ -10,12 +10,12 @@ module.exports = function(contractIns, rpcProvider) {
 	const sender = process.env.ADMIN_ADDRESS;
 	return async function(id, hash) {
 		const nonceStart = await rpcProvider.getTransactionCount(sender);
-		console.log(`Minter Address(${sender}) Start Nonce: ${nonceStart}`);
+		console.log(`Sender Address(${sender}) Start Nonce: ${nonceStart}`);
 		const estimatedGasPrice = await rpcProvider.getGasPrice();
 		console.log(`GasPrice: ${estimatedGasPrice.toString()}`);
 
 		const tx = await contractIns.create(ethers.BigNumber.from(id), String(hash), {
-			gasPrice: estimatedGasPrice.mul(1.2),
+			gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.1)),
 			nonce: nonceStart,
 		});
 		console.log(`Tx Sent [Nonce: ${nonceStart}] hash: ${tx.hash}`);
