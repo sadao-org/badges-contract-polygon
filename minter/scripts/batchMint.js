@@ -26,10 +26,23 @@ module.exports = function(contractIns, rpcProvider) {
 		for (let i = 0; i < maxLength; i += batchAmt) {
 			const step = Math.min(maxLength, i + batchAmt);
 			const sliced = _.slice(importedArray, i, step);
-			const txs = await Promise.all(_.map(sliced, async (address, sliceIdx) => {
+			const txs = await Promise.all(_.map(sliced, async (one, sliceIdx) => {
+				let address;
+				let amount;
+				if (typeof one === 'string') {
+					address = one;
+					amount = 1;
+				}
+				else if (typeof one === 'object') {
+					address = one.address;
+					amount = one.amount || 1;
+				}
+				if (!address) {
+					return null;
+				}
 				const currentNonce = nonceStart + i + sliceIdx;
 				console.log(`Minting for (${address}) at nonce [${currentNonce}]...`);
-				const tx = await contractIns.mint(address, ethers.BigNumber.from(id), ethers.BigNumber.from(1), 0x0, {
+				const tx = await contractIns.mint(address, ethers.BigNumber.from(id), ethers.BigNumber.from(amount), 0x0, {
 					gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.2)),
 					nonce: currentNonce,
 				});
@@ -37,6 +50,7 @@ module.exports = function(contractIns, rpcProvider) {
 				return tx;
 			}));
 			await Promise.all(_.map(txs, async (tx, sliceIdx) => {
+				if (!tx) return;
 				const currentNonce = nonceStart + i + sliceIdx;
 				const result = await tx.wait();
 				if (result) {
