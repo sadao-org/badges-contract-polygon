@@ -19,7 +19,7 @@ const CONTRACT_ABI = require('./json/SaDAOBadge.abi.json');
 const contractIns = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
 // run
-async function run() {
-	require('./scripts/batchMint')(contractIns, rpcProvider);
-}
-run();
+// const run = require('./scripts/batchMint')(contractIns, rpcProvider);
+// run(1);
+// const run = require('./scripts/registerNFT')(contractIns, rpcProvider);
+// run(1);
