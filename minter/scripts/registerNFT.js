@@ -15,7 +15,7 @@ module.exports = function(contractIns, rpcProvider) {
 		console.log(`GasPrice: ${estimatedGasPrice.toString()}`);
 
 		const tx = await contractIns.create(ethers.BigNumber.from(id), String(hash), {
-			gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.1)),
+			gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.2)),
 			nonce: nonceStart,
 		});
 		console.log(`Tx Sent [Nonce: ${nonceStart}] hash: ${tx.hash}`);
