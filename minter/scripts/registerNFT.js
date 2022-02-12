@@ -6,7 +6,7 @@ const ethers = require('ethers');
  * @param {import("ethers").Contract} contractIns contract instance
  * @param {import("ethers").providers.JsonRpcProvider} rpcProvider rpc provider
  */
-module.exports = async function(contractIns, rpcProvider) {
+module.exports = function(contractIns, rpcProvider) {
 	const sender = process.env.ADMIN_ADDRESS;
 	return async function(id, hash) {
 		const nonceStart = await rpcProvider.getTransactionCount(sender);
