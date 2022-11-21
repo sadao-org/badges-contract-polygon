@@ -18,12 +18,13 @@ module.exports = function(contractIns, rpcProvider) {
 	return async function(id) {
 		const nonceStart = await rpcProvider.getTransactionCount(sender);
 		console.log(`Minter Address(${sender}) Start Nonce: ${nonceStart}`);
-		const estimatedGasPrice = await rpcProvider.getGasPrice();
-		console.log(`GasPrice: ${estimatedGasPrice.toString()}`);
 
 		const batchAmt = 20;
 		const maxLength = importedArray.length;
 		for (let i = 0; i < maxLength; i += batchAmt) {
+			const estimatedGasPrice = await rpcProvider.getGasPrice();
+			console.log(`[Batch-${i}] GasPrice: ${estimatedGasPrice.toString()}`);
+
 			const step = Math.min(maxLength, i + batchAmt);
 			const sliced = _.slice(importedArray, i, step);
 			const txs = await Promise.all(_.map(sliced, async (one, sliceIdx) => {
