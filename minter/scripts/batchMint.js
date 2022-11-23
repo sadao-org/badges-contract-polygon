@@ -44,7 +44,7 @@ module.exports = function(contractIns, rpcProvider) {
 				const currentNonce = nonceStart + i + sliceIdx;
 				console.log(`Minting for (${address}) at nonce [${currentNonce}]...`);
 				const tx = await contractIns.mint(address, ethers.BigNumber.from(id), ethers.BigNumber.from(amount), 0x0, {
-					gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.2)),
+					gasPrice: ethers.BigNumber.from(Math.ceil(estimatedGasPrice.toNumber() * 1.1)),
 					nonce: currentNonce,
 				});
 				console.log(`Tx Sent [Nonce: ${currentNonce}] hash: ${tx.hash}`);

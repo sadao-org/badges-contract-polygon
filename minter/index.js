@@ -20,6 +20,7 @@ const contractIns = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
 // run
 // const run = require('./scripts/batchMint')(contractIns, rpcProvider);
-// run(1);
+// run(3);
+
 // const run = require('./scripts/registerNFT')(contractIns, rpcProvider);
-// run(1);
+// run(3, 'bafkreibwoqu7smyaajx4xfbmoou55bsjetghgrfmwt7oufu36zqrpansdy');
